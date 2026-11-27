@@ -4,50 +4,54 @@ class Pathway {
   PVector location2;
   float size1;
   float size2;
-  float[] sizes = new float[1000];
-  float[] sizes2 = new float[1000];
-  int spawnTime;
+  int spawnTime1;
+  int spawnTime2;
   int rocks;
+  int boldrs;
+  
   
   Pathway() {
     location = new PVector(0,0);
     location2 = new PVector(width, 0);
     velocity = new PVector(0, 3);
-    for(int ig = 0; ig < sizes.length; ig++) {
-      sizes[ig] = random(40, 80);
-      sizes2[ig] = random(40, 80);
-    }
-    spawnTime = 100;
+    spawnTime1 = 100;
+    spawnTime2 = 20;
     rocks = 0;
+    boldrs = 0;
+    pebl = loadImage("pebble.png");
   }
   
-  void setBoulders(float currentLoc) {
-    for(int i = 0; i < sizes.length; i++) {
-      ellipse(location.x,currentLoc, sizes[i], sizes[i]);
-      ellipse(location2.x, currentLoc, sizes2[i], sizes2[i]);
-      currentLoc += 20;
-      currentLoc += 20;
-      location.add(velocity);
-      location2.add(velocity);
+  void setBoulders(int time, float speed, FloatList boldLoc, PImage boldr) {
+    boldr.resize(200, 200);
+    if (time > spawnTime2) {
+      boldLoc.set(boldrs, height+100);
+      spawnTime2 += 15;
+      boldrs++;
+    }
+    for (int ig = 0; ig < boldLoc.size(); ig++) {
+      image(boldr, width, boldLoc.get(ig));
+      image(boldr, 0, boldLoc.get(ig));
+      boldLoc.sub(ig, speed);
+      if(boldLoc.get(ig) < -100) {
+        boldLoc.remove(ig);
+      }
     }
   }
   
-  void setRocks(int time) {
-    FloatList rockLoc = new FloatList();
-    if (time > spawnTime) {
-      rockLoc.set(rocks, random(30,width-30));
-      spawnTime += 100;
+  void setRocks(int time, FloatList rockLoc, FloatList rockPos, PImage pebl, float speed) {
+    if (time > spawnTime1) {
+      rockLoc.set(rocks, height);
+      rockPos.set(rocks, random(30,width-30));
+      spawnTime1 += 100;
       rocks++;
     }
     for (int ig = 0; ig < rockLoc.size(); ig++) {
-      ellipse(rockLoc.get(ig), height, 10, 10);
-      rockLoc.sub(ig, 3);
+      image(pebl, rockPos.get(ig), rockLoc.get(ig));
+      rockLoc.sub(ig, speed);
     }
     
     
   }
   
-  
-  
-  
+ 
 }
